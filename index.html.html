@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamza Mustafa | SEO Specialist</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#04040A;
+  --bg2:#08080F;
+  --accent:#00FFB3;
+  --accent2:#7B6FFF;
+  --accent3:#FF6B6B;
+  --text:#F0F0FF;
+  --muted:#6A6A8A;
+  --card:rgba(255,255,255,0.03);
+  --border:rgba(255,255,255,0.07);
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  line-height:1.7;
+}
+
+/* CURSOR */
+.cursor{
+  position:fixed;width:12px;height:12px;
+  background:var(--accent);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform 0.1s,width 0.3s,height 0.3s,opacity 0.3s;
+  mix-blend-mode:screen;
+}
+.cursor-follower{
+  position:fixed;width:40px;height:40px;
+  border:1px solid rgba(0,255,179,0.3);border-radius:50%;
+  pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:all 0.15s ease-out;
+}
+
+/* THREE.JS CANVAS */
+#three-canvas{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  z-index:0;pointer-events:none;
+}
+
+/* LOADER */
+#loader{
+  position:fixed;inset:0;
+  background:var(--bg);
+  z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:1.5rem;
+}
+.loader-text{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.1rem;font-weight:600;
+  color:var(--accent);
+  letter-spacing:0.2em;text-transform:uppercase;
+}
+.loader-bar{
+  width:200px;height:2px;
+  background:rgba(255,255,255,0.05);
+  border-radius:100px;overflow:hidden;
+}
+.loader-fill{
+  height:100%;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  border-radius:100px;
+  transition:width 0.05s;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  padding:1.2rem 6%;
+  display:flex;justify-content:space-between;align-items:center;
+  background:rgba(4,4,10,0.7);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  transform:translateY(-100%);
+}
+.logo{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.5rem;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  letter-spacing:-0.02em;
+}
+.nav-links{display:flex;gap:2.5rem;list-style:none;}
+.nav-links a{
+  color:var(--muted);text-decoration:none;
+  font-size:0.85rem;font-weight:500;
+  letter-spacing:0.05em;text-transform:uppercase;
+  transition:color 0.3s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;
+  width:0;height:1px;background:var(--accent);
+  transition:width 0.3s;
+}
+.nav-links a:hover{color:var(--accent);}
+.nav-links a:hover::after{width:100%;}
+.nav-cta{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#000;padding:0.6rem 1.4rem;border-radius:6px;
+  text-decoration:none;font-weight:700;font-size:0.82rem;
+  letter-spacing:0.05em;text-transform:uppercase;
+  transition:transform 0.2s,box-shadow 0.2s;
+  box-shadow:0 0 24px rgba(0,255,179,0.25);
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(0,255,179,0.4);}
+
+/* HERO */
+#hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  position:relative;z-index:1;
+  padding:8rem 6% 4rem;
+}
+.hero-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:4rem;align-items:center;
+  max-width:1200px;margin:0 auto;width:100%;
+}
+.hero-left{overflow:hidden;}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:0.5rem;
+  background:rgba(0,255,179,0.07);
+  border:1px solid rgba(0,255,179,0.2);
+  color:var(--accent);
+  font-size:0.75rem;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;
+  padding:0.45rem 1rem;border-radius:100px;
+  margin-bottom:1.5rem;
+  opacity:0;transform:translateY(20px);
+}
+.hero-eyebrow .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.5);}}
+
+.hero-h1{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(2.8rem,5.5vw,5rem);
+  font-weight:800;line-height:1.05;
+  letter-spacing:-0.03em;
+  margin-bottom:1.5rem;
+  opacity:0;transform:translateY(40px);
+}
+.hero-h1 .name{
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 60%,#FF6B6B 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  display:block;
+}
+.hero-sub{
+  color:var(--muted);font-size:1.05rem;
+  max-width:460px;line-height:1.85;
+  margin-bottom:2.5rem;
+  opacity:0;transform:translateY(30px);
+}
+.hero-actions{
+  display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;transform:translateY(20px);
+}
+.btn-glow{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#000;padding:0.9rem 2.2rem;
+  border-radius:8px;text-decoration:none;
+  font-weight:700;font-size:0.9rem;
+  transition:transform 0.2s,box-shadow 0.2s;
+  box-shadow:0 0 30px rgba(0,255,179,0.3);
+  position:relative;overflow:hidden;
+}
+.btn-glow::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);
+  opacity:0;transition:opacity 0.3s;
+}
+.btn-glow:hover{transform:translateY(-3px);box-shadow:0 0 60px rgba(0,255,179,0.5);}
+.btn-glow:hover::before{opacity:1;}
+.btn-ghost{
+  border:1px solid var(--border);color:var(--text);
+  padding:0.9rem 2.2rem;border-radius:8px;
+  text-decoration:none;font-weight:500;font-size:0.9rem;
+  transition:border-color 0.3s,background 0.3s,transform 0.2s;
+}
+.btn-ghost:hover{border-color:var(--accent);background:rgba(0,255,179,0.05);transform:translateY(-2px);}
+
+/* 3D PROFILE SCENE */
+.hero-right{
+  display:flex;justify-content:center;align-items:center;
+  position:relative;
+  opacity:0;transform:translateX(60px);
+}
+.profile-scene{
+  position:relative;
+  width:360px;height:460px;
+  perspective:1200px;
+}
+.floating-card{
+  width:100%;height:100%;
+  transform-style:preserve-3d;
+  border-radius:28px;
+  background:linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.015));
+  border:1px solid rgba(255,255,255,0.1);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:2.5rem 2rem;
+  position:relative;overflow:hidden;
+  animation:floatCard 6s ease-in-out infinite;
+  cursor:none;
+}
+@keyframes floatCard{
+  0%,100%{transform:translateY(0px) rotateX(2deg);}
+  33%{transform:translateY(-12px) rotateX(-1deg) rotateY(2deg);}
+  66%{transform:translateY(-6px) rotateX(3deg) rotateY(-1deg);}
+}
+.floating-card::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 80% 20%,rgba(0,255,179,0.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 20% 80%,rgba(123,111,255,0.06) 0%,transparent 50%);
+}
+.card-glow-ring{
+  position:absolute;top:-80px;left:50%;
+  transform:translateX(-50%);
+  width:260px;height:260px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(0,255,179,0.08) 0%,transparent 70%);
+  animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{
+  0%,100%{opacity:0.5;transform:translateX(-50%) scale(1);}
+  50%{opacity:1;transform:translateX(-50%) scale(1.1);}
+}
+.profile-ring{
+  width:150px;height:150px;border-radius:50%;
+  padding:3px;
+  background:conic-gradient(from 0deg,var(--accent),var(--accent2),#FF6B6B,var(--accent));
+  margin-bottom:1.8rem;
+  position:relative;z-index:1;
+  animation:rotateBorder 4s linear infinite;
+}
+@keyframes rotateBorder{
+  from{background:conic-gradient(from 0deg,var(--accent),var(--accent2),#FF6B6B,var(--accent));}
+  to{background:conic-gradient(from 360deg,var(--accent),var(--accent2),#FF6B6B,var(--accent));}
+}
+.profile-ring img{
+  width:100%;height:100%;border-radius:50%;
+  object-fit:cover;display:block;
+  background:#111;
+}
+.card-name{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.5rem;font-weight:700;
+  letter-spacing:-0.01em;
+  margin-bottom:0.3rem;
+  position:relative;z-index:1;
+}
+.card-title{
+  color:var(--accent);font-size:0.78rem;
+  font-weight:700;letter-spacing:0.15em;
+  text-transform:uppercase;margin-bottom:1.8rem;
+  position:relative;z-index:1;
+}
+.card-chips{
+  display:flex;gap:0.5rem;flex-wrap:wrap;
+  justify-content:center;position:relative;z-index:1;
+}
+.chip{
+  background:rgba(0,255,179,0.08);
+  border:1px solid rgba(0,255,179,0.2);
+  color:var(--accent);
+  font-size:0.72rem;font-weight:600;
+  padding:0.3rem 0.7rem;border-radius:100px;
+  letter-spacing:0.04em;
+}
+
+/* floating badges around card */
+.badge-float{
+  position:absolute;
+  background:rgba(8,8,15,0.9);
+  border:1px solid var(--border);
+  border-radius:12px;padding:0.7rem 1rem;
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:0.8rem;font-weight:600;
+  backdrop-filter:blur(10px);
+  white-space:nowrap;
+  animation:floatBadge 5s ease-in-out infinite;
+  z-index:2;
+}
+.badge-float .b-val{color:var(--accent);}
+.badge-float .b-lbl{color:var(--muted);}
+.bf1{top:5%;right:-60px;animation-delay:0s;}
+.bf2{bottom:15%;left:-70px;animation-delay:1.5s;}
+.bf3{top:55%;right:-65px;animation-delay:3s;}
+@keyframes floatBadge{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-8px);}
+}
+
+/* MARQUEE */
+.marquee-section{
+  padding:1.5rem 0;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  overflow:hidden;position:relative;z-index:1;
+  background:rgba(0,255,179,0.02);
+}
+.marquee-track{
+  display:flex;gap:3rem;
+  animation:marquee 20s linear infinite;
+  width:max-content;
+}
+.marquee-item{
+  color:var(--muted);font-size:0.82rem;
+  font-weight:500;letter-spacing:0.1em;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:0.8rem;
+  white-space:nowrap;
+}
+.marquee-item .m-dot{
+  width:4px;height:4px;border-radius:50%;
+  background:var(--accent);opacity:0.5;
+}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* STATS */
+#stats{
+  padding:5rem 6%;position:relative;z-index:1;
+}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1.5rem;max-width:1100px;margin:0 auto;
+}
+.stat-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:2rem 1.5rem;
+  text-align:center;
+  transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;
+  position:relative;overflow:hidden;
+}
+.stat-box::before{
+  content:'';position:absolute;
+  top:0;left:50%;transform:translateX(-50%);
+  width:60%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);
+}
+.stat-box:hover{
+  transform:translateY(-8px);
+  border-color:rgba(0,255,179,0.25);
+  box-shadow:0 20px 60px rgba(0,255,179,0.08);
+}
+.stat-num{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:2.8rem;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;display:block;margin-bottom:0.5rem;
+}
+.stat-label{color:var(--muted);font-size:0.82rem;letter-spacing:0.05em;}
+
+/* SECTION HEADER */
+.sec-head{text-align:center;margin-bottom:4rem;}
+.sec-tag{
+  color:var(--accent);font-size:0.75rem;
+  font-weight:700;letter-spacing:0.2em;
+  text-transform:uppercase;margin-bottom:0.8rem;display:block;
+}
+.sec-h2{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(2rem,3.5vw,3rem);
+  font-weight:700;line-height:1.15;
+  letter-spacing:-0.02em;margin-bottom:0.8rem;
+}
+.sec-sub{color:var(--muted);font-size:1rem;max-width:500px;margin:0 auto;}
+
+/* SERVICES */
+#services{padding:6rem 6%;position:relative;z-index:1;}
+.services-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;max-width:1100px;margin:0 auto;
+}
+.svc-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:2.2rem;
+  transition:all 0.4s cubic-bezier(0.16,1,0.3,1);
+  position:relative;overflow:hidden;
+  transform-style:preserve-3d;
+  cursor:none;
+}
+.svc-card::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,255,179,0.04),rgba(123,111,255,0.04));
+  opacity:0;transition:opacity 0.4s;
+}
+.svc-card:hover{
+  transform:translateY(-12px) rotateX(5deg);
+  border-color:rgba(0,255,179,0.3);
+  box-shadow:0 30px 80px rgba(0,255,179,0.1),0 0 0 1px rgba(0,255,179,0.1);
+}
+.svc-card:hover::after{opacity:1;}
+.svc-num{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:0.7rem;font-weight:700;
+  color:rgba(0,255,179,0.3);letter-spacing:0.1em;
+  margin-bottom:1.2rem;display:block;
+}
+.svc-icon-wrap{
+  width:56px;height:56px;border-radius:14px;
+  background:linear-gradient(135deg,rgba(0,255,179,0.1),rgba(123,111,255,0.1));
+  border:1px solid rgba(0,255,179,0.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:1.3rem;
+  transition:transform 0.3s;
+}
+.svc-card:hover .svc-icon-wrap{transform:scale(1.1) rotate(5deg);}
+.svc-card h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.05rem;font-weight:600;
+  margin-bottom:0.7rem;
+}
+.svc-card p{color:var(--muted);font-size:0.88rem;line-height:1.75;}
+
+/* SKILLS */
+#skills{
+  padding:6rem 6%;
+  background:rgba(255,255,255,0.01);
+  position:relative;z-index:1;
+}
+.skills-wrap{max-width:860px;margin:0 auto;}
+.skill-item{margin-bottom:1.8rem;}
+.skill-top{
+  display:flex;justify-content:space-between;
+  margin-bottom:0.6rem;
+}
+.skill-name{font-size:0.92rem;font-weight:500;}
+.skill-pct{font-size:0.88rem;color:var(--accent);font-weight:600;}
+.skill-track{
+  height:5px;background:rgba(255,255,255,0.05);
+  border-radius:100px;overflow:hidden;
+}
+.skill-bar{
+  height:100%;width:0;border-radius:100px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  transition:width 1.8s cubic-bezier(0.16,1,0.3,1);
+  position:relative;
+}
+.skill-bar::after{
+  content:'';position:absolute;
+  right:0;top:50%;transform:translateY(-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 12px var(--accent);
+}
+
+/* PORTFOLIO */
+#work{padding:6rem 6%;position:relative;z-index:1;}
+.work-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);
+  gap:2rem;max-width:1100px;margin:0 auto;
+}
+.work-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:24px;overflow:hidden;
+  transition:transform 0.4s cubic-bezier(0.16,1,0.3,1),box-shadow 0.4s;
+  cursor:none;
+}
+.work-card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 40px 100px rgba(0,0,0,0.5);
+}
+.work-card-banner{
+  height:6px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),#FF6B6B);
+}
+.work-card-body{padding:2rem;}
+.work-niche{
+  display:inline-block;
+  background:rgba(0,255,179,0.08);
+  border:1px solid rgba(0,255,179,0.2);
+  color:var(--accent);
+  font-size:0.72rem;font-weight:700;
+  padding:0.3rem 0.8rem;border-radius:100px;
+  text-transform:uppercase;letter-spacing:0.08em;
+  margin-bottom:1rem;
+}
+.work-card-body h3{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.1rem;font-weight:600;
+  margin-bottom:0.7rem;line-height:1.4;
+}
+.work-card-body p{color:var(--muted);font-size:0.87rem;line-height:1.75;}
+.work-metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:0.8rem;padding:1.5rem 2rem;
+  border-top:1px solid var(--border);
+}
+.wm{text-align:center;}
+.wm-val{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.4rem;font-weight:700;
+  color:var(--accent);display:block;
+}
+.wm-key{
+  font-size:0.7rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.06em;
+  margin-top:2px;
+}
+
+/* GSC PLACEHOLDER */
+.gsc-placeholder{
+  max-width:1100px;margin:3rem auto 0;
+  background:var(--card);
+  border:1px dashed rgba(0,255,179,0.25);
+  border-radius:20px;padding:3rem;
+  text-align:center;
+}
+.gsc-placeholder p{color:var(--muted);font-size:0.9rem;margin-top:0.5rem;}
+
+/* CERTS */
+#certs{
+  padding:6rem 6%;
+  background:rgba(255,255,255,0.01);
+  position:relative;z-index:1;
+}
+.certs-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5rem;max-width:1100px;margin:0 auto;
+}
+.cert-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:18px;padding:1.6rem;
+  display:flex;gap:1.1rem;align-items:flex-start;
+  transition:border-color 0.3s,transform 0.3s;
+}
+.cert-card:hover{
+  border-color:rgba(123,111,255,0.35);
+  transform:translateY(-5px);
+}
+.cert-ico{
+  width:46px;height:46px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(123,111,255,0.15),rgba(0,255,179,0.15));
+  border:1px solid rgba(123,111,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.cert-card h4{
+  font-size:0.9rem;font-weight:600;
+  margin-bottom:0.3rem;line-height:1.4;
+}
+.cert-card span{color:var(--muted);font-size:0.78rem;}
+
+/* CONTACT */
+#contact{
+  padding:6rem 6%;
+  position:relative;z-index:1;
+  text-align:center;
+}
+.contact-wrap{
+  max-width:580px;margin:0 auto;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:28px;padding:3.5rem;
+  position:relative;overflow:hidden;
+}
+.contact-wrap::before{
+  content:'';position:absolute;
+  top:-100px;left:50%;transform:translateX(-50%);
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(0,255,179,0.05),transparent 70%);
+  pointer-events:none;
+}
+.contact-email{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.6rem;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;display:block;margin:1.5rem 0;
+  transition:opacity 0.3s;
+}
+.contact-email:hover{opacity:0.8;}
+.contact-links{
+  display:flex;gap:1rem;justify-content:center;
+  margin-top:1.5rem;flex-wrap:wrap;
+}
+.clink{
+  display:flex;align-items:center;gap:0.6rem;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:10px;padding:0.75rem 1.3rem;
+  text-decoration:none;color:var(--text);
+  font-size:0.87rem;font-weight:500;
+  transition:border-color 0.3s,background 0.3s,transform 0.2s;
+}
+.clink:hover{
+  border-color:var(--accent);
+  background:rgba(0,255,179,0.04);
+  transform:translateY(-3px);
+}
+.clink .ci{font-size:1rem;}
+
+/* FOOTER */
+footer{
+  text-align:center;padding:2rem;
+  border-top:1px solid var(--border);
+  color:var(--muted);font-size:0.8rem;
+  position:relative;z-index:1;
+}
+footer span{color:var(--accent);}
+
+/* SCROLL REVEAL */
+.sr{opacity:0;transform:translateY(50px);transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1);}
+.sr.vis{opacity:1;transform:translateY(0);}
+.sr-l{opacity:0;transform:translateX(-50px);transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1);}
+.sr-l.vis{opacity:1;transform:translateX(0);}
+.sr-r{opacity:0;transform:translateX(50px);transition:opacity 0.9s cubic-bezier(0.16,1,0.3,1),transform 0.9s cubic-bezier(0.16,1,0.3,1);}
+.sr-r.vis{opacity:1;transform:translateX(0);}
+
+/* STAGGER */
+.s1{transition-delay:0.1s;}.s2{transition-delay:0.2s;}.s3{transition-delay:0.3s;}
+.s4{transition-delay:0.4s;}.s5{transition-delay:0.5s;}.s6{transition-delay:0.6s;}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .hero-grid{grid-template-columns:1fr;text-align:center;}
+  .hero-sub{margin:0 auto 2.5rem;}
+  .hero-actions{justify-content:center;}
+  .hero-right{display:none;}
+  .services-grid{grid-template-columns:1fr 1fr;}
+  .work-grid{grid-template-columns:1fr;}
+  .certs-grid{grid-template-columns:1fr 1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:600px){
+  .services-grid,.certs-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:1rem;}
+  nav .nav-links,.nav-cta{display:none;}
+  .work-metrics{grid-template-columns:1fr 1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-text">Loading Portfolio</div>
+  <div class="loader-bar"><div class="loader-fill" id="lbar"></div></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cfollow"></div>
+
+<!-- THREE.JS 3D BACKGROUND -->
+<canvas id="three-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo">HM.</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#work">Results</a></li>
+    <li><a href="#certs">Certs</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Hire Me</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-eyebrow" id="he"><span class="dot"></span> Available for SEO Projects</div>
+      <h1 class="hero-h1" id="hh">
+        I'm<br>
+        <span class="name">Hamza Mustafa</span>
+        SEO Specialist
+      </h1>
+      <p class="hero-sub" id="hs">
+        Driving organic growth through data-backed SEO strategies — from technical audits to content that ranks. I turn search traffic into real business leads.
+      </p>
+      <div class="hero-actions" id="ha">
+        <a href="#work" class="btn-glow">View Client Results</a>
+        <a href="#contact" class="btn-ghost">Let's Talk →</a>
+      </div>
+    </div>
+    <div class="hero-right" id="hr">
+      <div class="profile-scene">
+        <!-- floating badges -->
+        <div class="badge-float bf1"><span class="b-val">+320%</span><span class="b-lbl">Traffic</span></div>
+        <div class="badge-float bf2"><span class="b-val">Top 3</span><span class="b-lbl">Rankings</span></div>
+        <div class="badge-float bf3"><span class="b-val">50+</span><span class="b-lbl">Clients</span></div>
+        <div class="floating-card" id="fcrd">
+          <div class="card-glow-ring"></div>
+          <div class="profile-ring">
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect width='150' height='150' rx='75' fill='%230d0d1a'/%3E%3Ctext x='75' y='90' font-size='52' text-anchor='middle' fill='%2300FFB3' font-family='sans-serif' font-weight='700'%3EHM%3C/text%3E%3C/svg%3E" alt="Hamza Mustafa" id="pphoto">
+          </div>
+          <div class="card-name">Hamza Mustafa</div>
+          <div class="card-title">SEO Specialist</div>
+          <div class="card-chips">
+            <span class="chip">Technical SEO</span>
+            <span class="chip">Link Building</span>
+            <span class="chip">Analytics</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="mtrack">
+    <span class="marquee-item"><span class="m-dot"></span>Technical SEO</span>
+    <span class="marquee-item"><span class="m-dot"></span>Keyword Research</span>
+    <span class="marquee-item"><span class="m-dot"></span>Link Building</span>
+    <span class="marquee-item"><span class="m-dot"></span>On-Page Optimization</span>
+    <span class="marquee-item"><span class="m-dot"></span>Google Search Console</span>
+    <span class="marquee-item"><span class="m-dot"></span>Content Strategy</span>
+    <span class="marquee-item"><span class="m-dot"></span>Local SEO</span>
+    <span class="marquee-item"><span class="m-dot"></span>Site Audits</span>
+    <span class="marquee-item"><span class="m-dot"></span>Backlink Analysis</span>
+    <span class="marquee-item"><span class="m-dot"></span>Core Web Vitals</span>
+    <span class="marquee-item"><span class="m-dot"></span>Technical SEO</span>
+    <span class="marquee-item"><span class="m-dot"></span>Keyword Research</span>
+    <span class="marquee-item"><span class="m-dot"></span>Link Building</span>
+    <span class="marquee-item"><span class="m-dot"></span>On-Page Optimization</span>
+    <span class="marquee-item"><span class="m-dot"></span>Google Search Console</span>
+    <span class="marquee-item"><span class="m-dot"></span>Content Strategy</span>
+    <span class="marquee-item"><span class="m-dot"></span>Local SEO</span>
+    <span class="marquee-item"><span class="m-dot"></span>Site Audits</span>
+    <span class="marquee-item"><span class="m-dot"></span>Backlink Analysis</span>
+    <span class="marquee-item"><span class="m-dot"></span>Core Web Vitals</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="stat-box sr s1"><span class="stat-num" data-t="50" data-s="+">0+</span><div class="stat-label">Projects Completed</div></div>
+    <div class="stat-box sr s2"><span class="stat-num" data-t="300" data-s="%">0%</span><div class="stat-label">Avg. Traffic Growth</div></div>
+    <div class="stat-box sr s3"><span class="stat-num" data-t="1000" data-s="+">0+</span><div class="stat-label">Keywords Ranked</div></div>
+    <div class="stat-box sr s4"><span class="stat-num" data-t="98" data-s="%">0%</span><div class="stat-label">Client Satisfaction</div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sec-head sr">
+    <span class="sec-tag">What I Do</span>
+    <h2 class="sec-h2">SEO Services</h2>
+    <p class="sec-sub">Full-stack SEO solutions to grow your visibility and convert traffic into leads</p>
+  </div>
+  <div class="services-grid">
+    <div class="svc-card sr s1">
+      <span class="svc-num">01</span>
+      <div class="svc-icon-wrap">🔍</div>
+      <h3>Technical SEO</h3>
+      <p>Deep site audits, Core Web Vitals, schema markup, crawl optimization — fixing what search engines can't ignore.</p>
+    </div>
+    <div class="svc-card sr s2">
+      <span class="svc-num">02</span>
+      <div class="svc-icon-wrap">📝</div>
+      <h3>On-Page SEO</h3>
+      <p>Keyword research, content optimization, meta structure, and internal linking to maximize every page's ranking potential.</p>
+    </div>
+    <div class="svc-card sr s3">
+      <span class="svc-num">03</span>
+      <div class="svc-icon-wrap">🔗</div>
+      <h3>Link Building</h3>
+      <p>White-hat authority backlinks through outreach, guest posting, and digital PR to boost domain strength.</p>
+    </div>
+    <div class="svc-card sr s4">
+      <span class="svc-num">04</span>
+      <div class="svc-icon-wrap">📊</div>
+      <h3>SEO Audits</h3>
+      <p>Comprehensive technical and content audits with a prioritized fix roadmap — know exactly what's holding you back.</p>
+    </div>
+    <div class="svc-card sr s5">
+      <span class="svc-num">05</span>
+      <div class="svc-icon-wrap">🏪</div>
+      <h3>Local SEO</h3>
+      <p>Google Business Profile optimization, local citations, and geo-targeted pages to dominate your local market.</p>
+    </div>
+    <div class="svc-card sr s6">
+      <span class="svc-num">06</span>
+      <div class="svc-icon-wrap">📈</div>
+      <h3>SEO Reporting</h3>
+      <p>Custom Search Console and Analytics dashboards with monthly reports that actually tell a clear performance story.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="sec-head sr">
+    <span class="sec-tag">Expertise</span>
+    <h2 class="sec-h2">Core Skills</h2>
+    <p class="sec-sub">Tools and techniques I use daily to move the needle</p>
+  </div>
+  <div class="skills-wrap" id="skwrap">
+    <div class="skill-item sr s1">
+      <div class="skill-top"><span class="skill-name">Technical SEO</span><span class="skill-pct">95%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="95"></div></div>
+    </div>
+    <div class="skill-item sr s2">
+      <div class="skill-top"><span class="skill-name">Keyword Research</span><span class="skill-pct">92%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="92"></div></div>
+    </div>
+    <div class="skill-item sr s3">
+      <div class="skill-top"><span class="skill-name">On-Page Optimization</span><span class="skill-pct">93%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="93"></div></div>
+    </div>
+    <div class="skill-item sr s4">
+      <div class="skill-top"><span class="skill-name">Link Building</span><span class="skill-pct">87%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="87"></div></div>
+    </div>
+    <div class="skill-item sr s5">
+      <div class="skill-top"><span class="skill-name">Google Search Console</span><span class="skill-pct">96%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="96"></div></div>
+    </div>
+    <div class="skill-item sr">
+      <div class="skill-top"><span class="skill-name">Ahrefs / SEMrush</span><span class="skill-pct">90%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="90"></div></div>
+    </div>
+    <div class="skill-item sr">
+      <div class="skill-top"><span class="skill-name">Content Strategy</span><span class="skill-pct">88%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="88"></div></div>
+    </div>
+    <div class="skill-item sr">
+      <div class="skill-top"><span class="skill-name">Local SEO</span><span class="skill-pct">91%</span></div>
+      <div class="skill-track"><div class="skill-bar" data-w="91"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section id="work">
+  <div class="sec-head sr">
+    <span class="sec-tag">Client Results</span>
+    <h2 class="sec-h2">Real Growth, Real Leads</h2>
+    <p class="sec-sub">Projects where SEO directly generated measurable leads and revenue</p>
+  </div>
+  <div class="work-grid">
+    <div class="work-card sr s1">
+      <div class="work-card-banner"></div>
+      <div class="work-card-body">
+        <span class="work-niche">E-Commerce</span>
+        <h3>Online Store — Organic Traffic Surge</h3>
+        <p>Full technical audit + on-page + link building targeting high-intent buyer keywords. Converted search visitors directly into sales.</p>
+      </div>
+      <div class="work-metrics">
+        <div class="wm"><span class="wm-val">+320%</span><div class="wm-key">Traffic</div></div>
+        <div class="wm"><span class="wm-val">+180%</span><div class="wm-key">Leads</div></div>
+        <div class="wm"><span class="wm-val">6 Mo.</span><div class="wm-key">Timeline</div></div>
+      </div>
+    </div>
+    <div class="work-card sr s2">
+      <div class="work-card-banner"></div>
+      <div class="work-card-body">
+        <span class="work-niche">Real Estate</span>
+        <h3>Property Agency — Local Lead Generation</h3>
+        <p>Local SEO, Google Business Profile + geo-targeted landing pages capturing high-value local property buyers and renters.</p>
+      </div>
+      <div class="work-metrics">
+        <div class="wm"><span class="wm-val">+250%</span><div class="wm-key">Visibility</div></div>
+        <div class="wm"><span class="wm-val">Top 3</span><div class="wm-key">Rankings</div></div>
+        <div class="wm"><span class="wm-val">4 Mo.</span><div class="wm-key">Timeline</div></div>
+      </div>
+    </div>
+    <div class="work-card sr s3">
+      <div class="work-card-banner"></div>
+      <div class="work-card-body">
+        <span class="work-niche">Healthcare</span>
+        <h3>Medical Clinic — Patient Enquiry Growth</h3>
+        <p>Technical rebuild + medically accurate content clusters + "near me" optimization increased patient bookings significantly.</p>
+      </div>
+      <div class="work-metrics">
+        <div class="wm"><span class="wm-val">+400%</span><div class="wm-key">Impressions</div></div>
+        <div class="wm"><span class="wm-val">+220%</span><div class="wm-key">Enquiries</div></div>
+        <div class="wm"><span class="wm-val">5 Mo.</span><div class="wm-key">Timeline</div></div>
+      </div>
+    </div>
+    <div class="work-card sr s4">
+      <div class="work-card-banner"></div>
+      <div class="work-card-body">
+        <span class="work-niche">SaaS / Tech</span>
+        <h3>Software Company — Inbound Demo Machine</h3>
+        <p>Bottom-of-funnel content strategy with comparison pages and feature articles driving qualified demo requests organically.</p>
+      </div>
+      <div class="work-metrics">
+        <div class="wm"><span class="wm-val">+500%</span><div class="wm-key">Sessions</div></div>
+        <div class="wm"><span class="wm-val">+350%</span><div class="wm-key">Demos</div></div>
+        <div class="wm"><span class="wm-val">8 Mo.</span><div class="wm-key">Timeline</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GSC placeholder -->
+  <div class="gsc-placeholder sr" style="margin-top:3rem;">
+    <div style="font-size:2rem;margin-bottom:0.8rem;">📈</div>
+    <p style="color:var(--text);font-weight:600;font-size:1rem;">Search Console Performance Graphs</p>
+    <p>Client GSC graphs (clicks, impressions, CTR) will be added here with real URLs.</p>
+  </div>
+</section>
+
+<!-- CERTS -->
+<section id="certs">
+  <div class="sec-head sr">
+    <span class="sec-tag">Credentials</span>
+    <h2 class="sec-h2">Certifications</h2>
+    <p class="sec-sub">Industry-recognized qualifications backing every strategy I deliver</p>
+  </div>
+  <div class="certs-grid">
+    <div class="cert-card sr s1"><div class="cert-ico">🏆</div><div><h4>Google Analytics Certification</h4><span>Google — 2024</span></div></div>
+    <div class="cert-card sr s2"><div class="cert-ico">🔍</div><div><h4>SEMrush SEO Fundamentals</h4><span>SEMrush — 2024</span></div></div>
+    <div class="cert-card sr s3"><div class="cert-ico">📊</div><div><h4>HubSpot Content Marketing</h4><span>HubSpot — 2023</span></div></div>
+    <div class="cert-card sr s4"><div class="cert-ico">🎯</div><div><h4>Ahrefs SEO Training Course</h4><span>Ahrefs — 2024</span></div></div>
+    <div class="cert-card sr s5"><div class="cert-ico">⚡</div><div><h4>Technical SEO Certification</h4><span>Moz — 2023</span></div></div>
+    <div class="cert-card sr s6"><div class="cert-ico">🌐</div><div><h4>Google Search Console Mastery</h4><span>Google — 2024</span></div></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="sec-head sr">
+    <span class="sec-tag">Get in Touch</span>
+    <h2 class="sec-h2">Let's Work Together</h2>
+    <p class="sec-sub">Ready to grow your organic traffic? Let's build something great.</p>
+  </div>
+  <div class="contact-wrap sr">
+    <p style="color:var(--muted);font-size:0.95rem;">Have a project? Drop me a message.</p>
+    <a href="mailto:your@email.com" class="contact-email">your@email.com</a>
+    <div class="contact-links">
+      <a href="https://linkedin.com/in/mustafa-hamza" target="_blank" class="clink"><span class="ci">🔗</span>LinkedIn</a>
+      <a href="https://wa.me/92XXXXXXXXXX" target="_blank" class="clink"><span class="ci">💬</span>WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 <span>Hamza Mustafa</span> · SEO Specialist · Crafted with purpose</p>
+</footer>
+
+<script>
+/* ── LOADER ── */
+const lbar = document.getElementById('lbar');
+const loader = document.getElementById('loader');
+let lp = 0;
+const lt = setInterval(()=>{
+  lp += Math.random()*15;
+  if(lp>=100){lp=100;clearInterval(lt);
+    setTimeout(()=>{
+      loader.style.opacity='0';loader.style.transition='opacity 0.6s';
+      setTimeout(()=>{loader.style.display='none';initHeroAnim();},600);
+    },200);
+  }
+  lbar.style.width=lp+'%';
+},80);
+
+/* ── CURSOR ── */
+const cur=document.getElementById('cursor'),cfl=document.getElementById('cfollow');
+let mx=0,my=0,fx=0,fy=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cur.style.left=mx+'px';cur.style.top=my+'px';
+});
+function animCursor(){
+  fx+=(mx-fx)*0.12;fy+=(my-fy)*0.12;
+  cfl.style.left=fx+'px';cfl.style.top=fy+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a,.svc-card,.work-card,.stat-box').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{
+    cur.style.width='20px';cur.style.height='20px';cur.style.opacity='0.6';
+    cfl.style.width='60px';cfl.style.height='60px';
+  });
+  el.addEventListener('mouseleave',()=>{
+    cur.style.width='12px';cur.style.height='12px';cur.style.opacity='1';
+    cfl.style.width='40px';cfl.style.height='40px';
+  });
+});
+
+/* ── THREE.JS 3D SCENE ── */
+(function(){
+  const canvas = document.getElementById('three-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(window.innerWidth,window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,0.1,100);
+  camera.position.z = 4;
+
+  /* floating geometries */
+  const geos = [
+    new THREE.IcosahedronGeometry(0.4,0),
+    new THREE.OctahedronGeometry(0.35,0),
+    new THREE.TetrahedronGeometry(0.4,0),
+    new THREE.IcosahedronGeometry(0.25,0),
+    new THREE.OctahedronGeometry(0.3,0),
+    new THREE.TetrahedronGeometry(0.3,0),
+    new THREE.IcosahedronGeometry(0.2,0),
+    new THREE.OctahedronGeometry(0.22,0),
+  ];
+
+  const colors=[0x00FFB3,0x7B6FFF,0xFF6B6B,0x00D4FF,0xFFB300,0x00FFB3,0x7B6FFF,0xFF6B6B];
+  const meshes=[];
+
+  geos.forEach((g,i)=>{
+    const mat = new THREE.MeshBasicMaterial({
+      color:colors[i%colors.length],
+      wireframe:true,
+      opacity:0.15,
+      transparent:true
+    });
+    const mesh = new THREE.Mesh(g,mat);
+    mesh.position.set(
+      (Math.random()-0.5)*10,
+      (Math.random()-0.5)*8,
+      (Math.random()-0.5)*4 - 2
+    );
+    mesh.userData={
+      rx:Math.random()*0.005+0.002,
+      ry:Math.random()*0.007+0.003,
+      fy:Math.random()*0.003+0.001,
+      oy:mesh.position.y
+    };
+    scene.add(mesh);
+    meshes.push(mesh);
+  });
+
+  /* particle field */
+  const ptGeo = new THREE.BufferGeometry();
+  const ptCount = 300;
+  const ptPos = new Float32Array(ptCount*3);
+  for(let i=0;i<ptCount*3;i++) ptPos[i]=(Math.random()-0.5)*20;
+  ptGeo.setAttribute('position',new THREE.BufferAttribute(ptPos,3));
+  const ptMat = new THREE.PointsMaterial({color:0x00FFB3,size:0.03,transparent:true,opacity:0.4});
+  scene.add(new THREE.Points(ptGeo,ptMat));
+
+  let mxn=0,myn=0;
+  document.addEventListener('mousemove',e=>{
+    mxn=(e.clientX/window.innerWidth-0.5)*2;
+    myn=-(e.clientY/window.innerHeight-0.5)*2;
+  });
+
+  let t=0;
+  function render(){
+    requestAnimationFrame(render);
+    t+=0.005;
+    meshes.forEach(m=>{
+      m.rotation.x+=m.userData.rx;
+      m.rotation.y+=m.userData.ry;
+      m.position.y=m.userData.oy+Math.sin(t+m.userData.oy)*0.3;
+    });
+    camera.position.x += (mxn*0.5 - camera.position.x)*0.05;
+    camera.position.y += (myn*0.3 - camera.position.y)*0.05;
+    renderer.render(scene,camera);
+  }
+  render();
+
+  window.addEventListener('resize',()=>{
+    camera.aspect=window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth,window.innerHeight);
+  });
+})();
+
+/* ── 3D CARD TILT ON MOUSE ── */
+const fcrd = document.getElementById('fcrd');
+const scene3d = document.querySelector('.profile-scene');
+if(scene3d){
+  scene3d.addEventListener('mousemove',e=>{
+    const r=scene3d.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-0.5;
+    const y=(e.clientY-r.top)/r.height-0.5;
+    fcrd.style.transform=`rotateY(${x*25}deg) rotateX(${-y*25}deg) translateY(-5px)`;
+    fcrd.style.animation='none';
+  });
+  scene3d.addEventListener('mouseleave',()=>{
+    fcrd.style.transform='';
+    fcrd.style.animation='';
+  });
+}
+
+/* ── HERO ANIMATION ── */
+function initHeroAnim(){
+  gsap.to('#nav',{y:0,duration:0.8,ease:'power3.out',delay:0.1});
+  gsap.to('#he',{opacity:1,y:0,duration:0.7,ease:'power3.out',delay:0.2});
+  gsap.to('#hh',{opacity:1,y:0,duration:0.9,ease:'power3.out',delay:0.35});
+  gsap.to('#hs',{opacity:1,y:0,duration:0.8,ease:'power3.out',delay:0.5});
+  gsap.to('#ha',{opacity:1,y:0,duration:0.7,ease:'power3.out',delay:0.65});
+  gsap.to('#hr',{opacity:1,x:0,duration:1,ease:'power3.out',delay:0.4});
+}
+
+/* ── SCROLL REVEAL ── */
+const srEls = document.querySelectorAll('.sr,.sr-l,.sr-r');
+const srObs = new IntersectionObserver(ents=>{
+  ents.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      const bars=e.target.querySelectorAll('.skill-bar');
+      bars.forEach(b=>{b.style.width=b.dataset.w+'%';});
+      srObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.12});
+srEls.forEach(el=>srObs.observe(el));
+
+/* ── COUNTER ANIM ── */
+function countUp(el,target,suffix){
+  let n=0,start=null;
+  const dur=2200;
+  const step=ts=>{
+    if(!start)start=ts;
+    const p=Math.min((ts-start)/dur,1);
+    const e=1-Math.pow(1-p,4);
+    el.textContent=Math.round(e*target)+suffix;
+    if(p<1)requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const cnObs=new IntersectionObserver(ents=>{
+  ents.forEach(e=>{
+    if(e.isIntersecting){
+      const t=parseInt(e.target.dataset.t);
+      const s=e.target.dataset.s||'';
+      countUp(e.target,t,s);
+      cnObs.unobserve(e.target);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('.stat-num[data-t]').forEach(el=>cnObs.observe(el));
+
+/* ── NAV scroll shrink ── */
+window.addEventListener('scroll',()=>{
+  const n=document.getElementById('nav');
+  if(window.scrollY>60){
+    n.style.padding='0.8rem 6%';
+  } else {
+    n.style.padding='1.2rem 6%';
+  }
+  n.style.transition='padding 0.3s';
+});
+</script>
+</body>
+</html>
